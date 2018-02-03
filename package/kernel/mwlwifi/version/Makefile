@@ -87,9 +87,14 @@ sed-set='s|^( *$(1) *:= *).*|\1'"$(2)"'|'
 
 $(EDIT_STAMP): $(EDIT_PREQ) | $(REPO_NAME)
 	cd $| && ( \
-	src_rev=`git log -1 --pretty=oneline $(REV) | cut -f1 -d' '` && \
+	src_rev=`git log -1 --pretty=oneline $(REV)` && \
+	src_rev=$${src_rev%% *} && \
+	[ "$${src_rev}" ] && \
 	drv_ver=`git show $${src_rev}:hif/pcie/dev.h | sed -rne 's/^#define PCIE_DRV_VERSION\s*"([^"]*)".*/\1/p'` && \
-	since_rev=`git blame -L'/^#define PCIE_DRV_VERSION/',+1 $${src_rev} -- hif/pcie/dev.h | cut -f1 -d' '` && \
+	[ "$${drv_ver}" ] && \
+	since_rev=`git blame -L'/^#define PCIE_DRV_VERSION/',+1 $${src_rev} -- hif/pcie/dev.h` && \
+	since_rev=$${since_rev%% *} && \
+	[ "$${since_rev}" ] && \
 	num_commits=`git log --oneline $${since_rev}..$${src_rev} | wc -l` && \
 	pkg_ver=`printf $(PKG_VER_FORMAT) $(PKG_VER_PARAMS)` && \
 	cd .. && \
