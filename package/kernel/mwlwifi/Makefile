@@ -29,7 +29,6 @@ define KernelPackage/mwlwifi
   SUBMENU:=Wireless Drivers
   TITLE:=Marvell 88W8864/88W8897/88W8964 wireless driver
   DEPENDS:=+kmod-mac80211 +@DRIVER_11N_SUPPORT +@DRIVER_11AC_SUPPORT +@DRIVER_11W_SUPPORT @PCI_SUPPORT @TARGET_mvebu
-  DEPENDS+=@(PACKAGE_mwlwifi-firmware-88w8864||PACKAGE_mwlwifi-firmware-88w8897||PACKAGE_mwlwifi-firmware-88w8964)
   FILES:=$(PKG_BUILD_DIR)/mwlwifi.ko
   AUTOLOAD:=$(call AutoLoad,50,mwlwifi)
 endef
@@ -54,7 +53,7 @@ define Package/mwlwifi-firmware-default
   SECTION:=firmware
   CATEGORY:=Firmware
   TITLE:=Marvell $(1) firmware
-  DEPENDS:=@TARGET_mvebu
+  DEPENDS:=+kmod-mwlwifi @TARGET_mvebu
 endef
 
 define Package/mwlwifi-firmware/install
